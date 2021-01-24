@@ -36,6 +36,12 @@ namespace TaskManager
                 SqliteCmd.ExecuteNonQuery();//Execute the SqliteCommand
                 sqlite_conn.Close();//Close the SqliteConnection
             this.Close();
+            
+            mainForm form = Application.OpenForms.OfType<mainForm>().FirstOrDefault();
+            if (form != null)
+            {
+                form.UpdateDataBase();
+            }
         }
 
         private void cancelButton_Click(object sender, EventArgs e)

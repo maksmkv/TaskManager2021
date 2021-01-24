@@ -29,19 +29,23 @@ namespace TaskManager
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(mainForm));
             this.loadButton = new System.Windows.Forms.Button();
             this.addTask = new System.Windows.Forms.Button();
             this.editTask = new System.Windows.Forms.Button();
             this.deleteTask = new System.Windows.Forms.Button();
             this.updateButton = new System.Windows.Forms.Button();
             this.textBox1 = new System.Windows.Forms.TextBox();
-            this.button1 = new System.Windows.Forms.Button();
             this.taskDataGridView = new System.Windows.Forms.DataGridView();
             this.btnStart = new System.Windows.Forms.Button();
             this.btnStop = new System.Windows.Forms.Button();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
-            this.label1 = new System.Windows.Forms.Label();
+            this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.toolStripStatusLabel3 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
+            this.button1 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.taskDataGridView)).BeginInit();
             this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -99,6 +103,7 @@ namespace TaskManager
             this.updateButton.TabIndex = 4;
             this.updateButton.Text = "Обновить данные";
             this.updateButton.UseVisualStyleBackColor = true;
+            this.updateButton.Click += new System.EventHandler(this.updateButton_Click);
             // 
             // textBox1
             // 
@@ -108,16 +113,6 @@ namespace TaskManager
             this.textBox1.Size = new System.Drawing.Size(534, 23);
             this.textBox1.TabIndex = 5;
             // 
-            // button1
-            // 
-            this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.button1.Location = new System.Drawing.Point(552, 44);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(120, 23);
-            this.button1.TabIndex = 6;
-            this.button1.Text = "Фильтр";
-            this.button1.UseVisualStyleBackColor = true;
-            // 
             // taskDataGridView
             // 
             this.taskDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
@@ -125,6 +120,7 @@ namespace TaskManager
             this.taskDataGridView.Name = "taskDataGridView";
             this.taskDataGridView.Size = new System.Drawing.Size(786, 348);
             this.taskDataGridView.TabIndex = 7;
+            this.taskDataGridView.RowStateChanged += new System.Windows.Forms.DataGridViewRowStateChangedEventHandler(this.taskDataGridView_RowStateChanged);
             // 
             // btnStart
             // 
@@ -151,7 +147,9 @@ namespace TaskManager
             // statusStrip1
             // 
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripStatusLabel1});
+            this.toolStripStatusLabel1,
+            this.toolStripStatusLabel2,
+            this.toolStripStatusLabel3});
             this.statusStrip1.Location = new System.Drawing.Point(0, 428);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Size = new System.Drawing.Size(813, 22);
@@ -161,24 +159,45 @@ namespace TaskManager
             // toolStripStatusLabel1
             // 
             this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
-            this.toolStripStatusLabel1.Size = new System.Drawing.Size(31, 17);
-            this.toolStripStatusLabel1.Text = "Stop";
+            this.toolStripStatusLabel1.Size = new System.Drawing.Size(167, 17);
+            this.toolStripStatusLabel1.Text = "Статус таймера - остановлен";
             // 
-            // label1
+            // toolStripStatusLabel2
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(163, 428);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(35, 13);
-            this.label1.TabIndex = 11;
-            this.label1.Text = "label1";
+            this.toolStripStatusLabel2.Name = "toolStripStatusLabel2";
+            this.toolStripStatusLabel2.Size = new System.Drawing.Size(83, 17);
+            this.toolStripStatusLabel2.Text = "Кол-во строк:";
+            // 
+            // toolStripStatusLabel3
+            // 
+            this.toolStripStatusLabel3.Name = "toolStripStatusLabel3";
+            this.toolStripStatusLabel3.Size = new System.Drawing.Size(107, 17);
+            this.toolStripStatusLabel3.Text = "Ожидание задачи:";
+            // 
+            // notifyIcon1
+            // 
+            this.notifyIcon1.BalloonTipIcon = System.Windows.Forms.ToolTipIcon.Info;
+            this.notifyIcon1.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon1.Icon")));
+            this.notifyIcon1.Text = "Менеджер задач";
+            this.notifyIcon1.Visible = true;
+            this.notifyIcon1.DoubleClick += new System.EventHandler(this.notifyIcon1_DoubleClick);
+            // 
+            // button1
+            // 
+            this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.button1.Location = new System.Drawing.Point(552, 44);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(120, 23);
+            this.button1.TabIndex = 6;
+            this.button1.Text = "Фильтр";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // mainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(813, 450);
-            this.Controls.Add(this.label1);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.btnStop);
             this.Controls.Add(this.btnStart);
@@ -190,9 +209,11 @@ namespace TaskManager
             this.Controls.Add(this.editTask);
             this.Controls.Add(this.addTask);
             this.Controls.Add(this.loadButton);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "mainForm";
             this.Text = "Менеджер задач";
             this.Load += new System.EventHandler(this.mainForm_Load);
+            this.Resize += new System.EventHandler(this.mainForm_Resize);
             ((System.ComponentModel.ISupportInitialize)(this.taskDataGridView)).EndInit();
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
@@ -209,13 +230,15 @@ namespace TaskManager
         private System.Windows.Forms.Button deleteTask;
         private System.Windows.Forms.Button updateButton;
         private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.Button button1;
         private System.Windows.Forms.DataGridView taskDataGridView;
         private System.Windows.Forms.Button btnStart;
         private System.Windows.Forms.Button btnStop;
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.NotifyIcon notifyIcon1;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel2;
+        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel3;
     }
 }
 
