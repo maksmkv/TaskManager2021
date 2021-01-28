@@ -1,4 +1,5 @@
-﻿// дела по https://docs.dataabstract.com/NET/Tutorials/TodoTutorial/defineschema/ 
+﻿
+/*// дела по https://docs.dataabstract.com/NET/Tutorials/TodoTutorial/defineschema/ 
 // добавление SQLite3 в проект https://www.youtube.com/watch?v=Cdxz2mNr1a8
 //https://stackoverflow.com/questions/19479166/sqlite-simple-insert-query/19489736
 //https://stackoverflow.com/questions/31981757/how-to-insert-data-into-sqlite-database-using-c-sharp
@@ -10,23 +11,17 @@
 //https://coderoad.ru/40379892/%D0%9F%D0%B5%D1%80%D0%B5%D0%B4%D0%B0%D1%87%D0%B0-%D0%B7%D0%BD%D0%B0%D1%87%D0%B5%D0%BD%D0%B8%D0%B9-%D1%87%D0%B5%D1%80%D0%B5%D0%B7-%D1%84%D0%BE%D1%80%D0%BC%D1%8B-c      передача строк
 //https://coderoad.ru/6936089/%D0%9A%D0%B0%D0%BA-%D0%BF%D1%80%D0%BE%D0%B3%D1%80%D0%B0%D0%BC%D0%BC%D0%BD%D0%BE-%D0%B2%D1%8B%D0%B1%D1%80%D0%B0%D1%82%D1%8C-%D0%BF%D0%B5%D1%80%D0%B2%D1%83%D1%8E-%D1%81%D1%82%D1%80%D0%BE%D0%BA%D1%83-DataGridView   выделить программно 1 строку
 //https://www.cyberforum.ru/windows-forms/thread435177.html
+*/
 
 
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using System.Data.SQLite;
-using System.IO;
-using System.Diagnostics;
 using System.Media;
+using System.Speech.Synthesis;
 using System.Timers;
-
+using System.Windows.Forms;
 
 
 namespace TaskManager
@@ -37,6 +32,8 @@ namespace TaskManager
 
         System.Timers.Timer timer;
         readonly SoundPlayer soundPlayer = new SoundPlayer();
+        readonly SpeechSynthesizer speaker = new SpeechSynthesizer();
+
 
         public mainForm()
         {
@@ -65,6 +62,21 @@ namespace TaskManager
             }
 
             this.taskDataGridView.Sort(this.taskDataGridView.Columns[2], ListSortDirection.Ascending);
+
+            if (ttsONOFF.Checked)
+            {
+                initTTS();
+
+                speaker.Speak("Данные загружены");
+            }
+            else
+            {
+                return;
+            }
+
+            btnStop.Enabled = true;
+
+
         }
 
         private void CustomizeDataGridView()
@@ -114,7 +126,6 @@ namespace TaskManager
                 EditTaskForm EditForm = new EditTaskForm(taskText, dateTask, detailTask, dataStringGridView, isCheckedData);
                 EditForm.Show();
             }
-
         }
 
 
@@ -136,6 +147,17 @@ namespace TaskManager
                 SqliteCmd.ExecuteNonQuery();//Execute the SqliteCommand
                 sqlite_conn.Close();
                 taskDataGridView.Rows.Remove(row);
+            }
+
+
+            if (ttsONOFF.Checked)
+            {
+                initTTS();
+                speaker.Speak("Задача удалена");
+            }
+            else
+            {
+                return;
             }
         }
 
@@ -171,15 +193,27 @@ namespace TaskManager
         {
             DateTime currentTime = DateTime.Now;
             DateTime userTime = DateTime.Parse(taskDataGridView.SelectedCells[2].Value.ToString());
-              
+
             if (currentTime.Hour == userTime.Hour && currentTime.Minute == userTime.Minute && currentTime.Second == userTime.Second)
             {
                 timer.Stop();
                 try
                 {
-                    toolStripStatusLabel1.Text = "Stop";
-                    soundPlayer.SoundLocation = ".\\bb.wav";
-                    soundPlayer.PlayLooping();
+                    if (ttsONOFF.Checked)
+                    {
+                        initTTS();
+                        speaker.Speak("Задание   " + taskDataGridView.CurrentCell.Value.ToString() + "... выполнено");
+                        toolStripStatusLabel1.Text = "Stop";
+                        soundPlayer.SoundLocation = ".\\bb.wav";
+                        soundPlayer.PlayLooping();
+                    }
+                    else
+                    {
+
+                        toolStripStatusLabel1.Text = "Stop";
+                        soundPlayer.SoundLocation = ".\\bb.wav";
+                        soundPlayer.PlayLooping();
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -190,28 +224,32 @@ namespace TaskManager
 
         private void mainForm_Load(object sender, EventArgs e)
         {
+            INIManager manager = new INIManager(".\\my.ini");
+            ttsONOFF.Checked = Convert.ToBoolean(manager.GetPrivateString("main", "onoffTTS"));
             timer = new System.Timers.Timer();
             timer.Interval = 1000;
             timer.Elapsed += Timer_elapsed;
+
+            btnStop.Enabled = false;
         }
-       
+
         private void btnStart_Click(object sender, EventArgs e)
         {
             updateButton.PerformClick();
             if (taskDataGridView.Rows.Count == 0)
-              {
-                   MessageBox.Show("Данные не заполнены!");
-              }
-              else
-              {
-                   taskDataGridView.CurrentCell = null;
-                   foreach (DataGridViewRow row in taskDataGridView.Rows)
-                   {
-                       if ((row.Cells[3].Value != null) && (row.Cells[3].Value.ToString() == "1"))
-                       {
-                           row.Visible = false;
-                       }
-                   }
+            {
+                MessageBox.Show("Данные не заполнены!");
+            }
+            else
+            {
+                taskDataGridView.CurrentCell = null;
+                foreach (DataGridViewRow row in taskDataGridView.Rows)
+                {
+                    if ((row.Cells[3].Value != null) && (row.Cells[3].Value.ToString() == "1"))
+                    {
+                        row.Visible = false;
+                    }
+                }
 
                 foreach (DataGridViewRow row in taskDataGridView.Rows)
                 {
@@ -229,95 +267,182 @@ namespace TaskManager
 
                 toolStripStatusLabel3.Text = " Ждем выполнения задачи: " + taskDataGridView.CurrentCell.Value.ToString();
 
+                if (ttsONOFF.Checked)
+                {
+                    initTTS();
+                    speaker.Speak("Таймер запущен");
+                }
+                else
+                {
+                    return;
+                }
+
             }
-}
+        }
+
+        private void btnStop_Click(object sender, EventArgs e)
+        {
+            btnStart.Enabled = true;
+            timer.Stop();
+            soundPlayer.Stop();
+            toolStripStatusLabel1.Text = "Stop";
 
 
 
-               private void btnStop_Click(object sender, EventArgs e)
-               {
-                   btnStart.Enabled = true;
-                   timer.Stop();
-                   soundPlayer.Stop();
-                   toolStripStatusLabel1.Text = "Stop";
+            var result = MessageBox.Show(@" Задание выполнено ?", "Подтвердить", MessageBoxButtons.YesNoCancel);
+            switch (result)
+            {
+                case DialogResult.Yes:
+                    isCheckedTrue();
+                    break;
+                case DialogResult.No:
+                    isCheckedFalse();
+                    break;
+                default:
+                    break;
+            }
+
+            updateButton.PerformClick();
+
+            if (ttsONOFF.Checked)
+            {
+                initTTS();
+                speaker.Speak("Таймер остановлен");
+            }
+            else
+            {
+                return;
+            }
+        }
+
+        private void updateButton_Click(object sender, EventArgs e)
+        {
+            UpdateDataBase();
+        }
+
+        public void UpdateDataBase()
+        {
+            this.CustomizeDataGridView();
+            SQLiteConnection myconnection = new SQLiteConnection("Data Source=c:\\sqlite\\taskdb.db; Version=3");
+            myconnection.Open();
+            SQLiteCommand cmd = new SQLiteCommand();
+            cmd.Connection = myconnection;
+            cmd.CommandText = "Select * from Task";
+
+            using (SQLiteDataReader sdr = cmd.ExecuteReader())
+            {
+                DataTable dt = new DataTable();
+                dt.Load(sdr);
+                sdr.Close();
+                myconnection.Close();
+                taskDataGridView.DataSource = dt;
+            }
+        }
+
+        private void mainForm_Resize(object sender, EventArgs e)
+        {
+            if (WindowState == FormWindowState.Minimized)
+                Hide();
+
+            notifyIcon1.BalloonTipTitle = "Программа свернута";
+            notifyIcon1.BalloonTipText = "Обратите внимание что программа была спрятана в трей и продолжит свою работу.";
+            notifyIcon1.ShowBalloonTip(2000);
+
+            if (timer.Enabled)
+            {
+                notifyIcon1.Text = "Таймер запущен!";
+            }
+            else
+            {
+                notifyIcon1.Text = "Таймер остановлен!";
+            }
+
+        }
+
+        private void notifyIcon1_DoubleClick(object sender, EventArgs e)
+        {
+            Show();
+            WindowState = FormWindowState.Normal;
+
+        }
 
 
-                   var result = MessageBox.Show(@" Задание выполнено ?", "Подтвердить", MessageBoxButtons.YesNoCancel);
-                   switch (result)
-                   {
-                       case DialogResult.Yes:
-                           isCheckedTrue();
-                           break;
-                       case DialogResult.No:
-                           isCheckedFalse();
-                           break;
-                       default:
-                           break;
-                   }
+        private void taskDataGridView_RowStateChanged(object sender, DataGridViewRowStateChangedEventArgs e)
+        {
+            toolStripStatusLabel2.Text = " Количество строк в БД: " + taskDataGridView.Rows.Count.ToString() + " - Видимых строк: " + taskDataGridView.DisplayedRowCount(true).ToString();
+        }
 
-                   updateButton.PerformClick();
-               }
+        public void initTTS()
+        {
+            INIManager manager = new INIManager(".\\my.ini");
+            speaker.SetOutputToDefaultAudioDevice();
+            speaker.SelectVoice("IVONA 2 Tatyana");
+            speaker.Rate = Convert.ToInt32(manager.GetPrivateString("main", "speedTTS"));
+            speaker.Volume = 100;
+        }
 
-               private void updateButton_Click(object sender, EventArgs e)
-               {
-                   UpdateDataBase();
-               }
+        private void mainForm_Shown(object sender, EventArgs e)
+        {
+            INIManager manager = new INIManager(".\\my.ini");
+            string htime = DateTime.Now.Hour.ToString();
+            int stim = Convert.ToInt16(htime);
 
-               public void UpdateDataBase()
-               {
-                   this.CustomizeDataGridView();
-                   SQLiteConnection myconnection = new SQLiteConnection("Data Source=c:\\sqlite\\taskdb.db; Version=3");
-                   myconnection.Open();
-                   SQLiteCommand cmd = new SQLiteCommand();
-                   cmd.Connection = myconnection;
-                   cmd.CommandText = "Select * from Task";
 
-                   using (SQLiteDataReader sdr = cmd.ExecuteReader())
-                   {
-                       DataTable dt = new DataTable();
-                       dt.Load(sdr);
-                       sdr.Close();
-                       myconnection.Close();
-                       taskDataGridView.DataSource = dt;
-                   }
-               }
+            if (stim >= 0 && stim <= 3)
+            {
+                if (ttsONOFF.Checked)
+                {
+                    initTTS();
+                    speaker.Speak("Доброй ночи" + manager.GetPrivateString("main", "name"));
+                }
+                else
+                {
+                    return;
+                }
 
-               private void mainForm_Resize(object sender, EventArgs e)
-               {
-                   if (WindowState == FormWindowState.Minimized)
-                       Hide();
+            }
 
-                   notifyIcon1.BalloonTipTitle = "Программа свернута";      
-                   notifyIcon1.BalloonTipText = "Обратите внимание что программа была спрятана в трей и продолжит свою работу.";
-                   notifyIcon1.ShowBalloonTip(2000);
+            else if (stim >= 4 && stim <= 11)
+            {
+                if (ttsONOFF.Checked)
+                {
+                    initTTS();
+                    speaker.Speak("Доброе утро" + manager.GetPrivateString("main", "name"));
+                }
+                else
+                {
+                    return;
+                }
+            }
 
-                   if (timer.Enabled)
-                   {
-                       notifyIcon1.Text = "Таймер запущен!";
-                   }
-                   else
-                   {
-                       notifyIcon1.Text = "Таймер остановлен!";
-                   }
+            else if (stim >= 12 && stim <= 16)
+            {
+                if (ttsONOFF.Checked)
+                {
+                    initTTS();
+                    speaker.Speak("Добрый день" + manager.GetPrivateString("main", "name"));
+                }
+                else
+                {
+                    return;
+                }
+            }
 
-               }
+            else if (stim >= 17 && stim <= 23)
+            {
+                if (ttsONOFF.Checked)
+                {
+                    initTTS();
+                    speaker.Speak("Добрый вечер" + manager.GetPrivateString("main", "name"));
+                }
+                else
+                {
+                    return;
+                }
+            }
 
-               private void notifyIcon1_DoubleClick(object sender, EventArgs e)
-               {
-                   Show();
-                   WindowState = FormWindowState.Normal;
-
-               }
-
-               private void button1_Click(object sender, EventArgs e)
-               {
-                   
-               }
-
-               private void taskDataGridView_RowStateChanged(object sender, DataGridViewRowStateChangedEventArgs e)
-               {
-                   toolStripStatusLabel2.Text = " Количество строк в БД: " + taskDataGridView.Rows.Count.ToString() + " - Видимых строк: " + taskDataGridView.DisplayedRowCount(true).ToString();
-               }
-
+            else
+                return;
+        }
     }
 }

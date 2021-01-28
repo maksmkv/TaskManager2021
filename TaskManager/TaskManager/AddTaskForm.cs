@@ -42,6 +42,7 @@ namespace TaskManager
             {
                 form.UpdateDataBase();
             }
+
         }
 
         private void cancelButton_Click(object sender, EventArgs e)

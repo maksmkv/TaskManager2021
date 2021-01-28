@@ -46,6 +46,7 @@ namespace TaskManager
             this.toolStripStatusLabel3 = new System.Windows.Forms.ToolStripStatusLabel();
             this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
             this.button1 = new System.Windows.Forms.Button();
+            this.ttsONOFF = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.taskDataGridView)).BeginInit();
             this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -108,9 +109,9 @@ namespace TaskManager
             // textBox1
             // 
             this.textBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.textBox1.Location = new System.Drawing.Point(12, 44);
+            this.textBox1.Location = new System.Drawing.Point(155, 44);
             this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(534, 23);
+            this.textBox1.Size = new System.Drawing.Size(391, 23);
             this.textBox1.TabIndex = 5;
             // 
             // taskDataGridView
@@ -187,17 +188,29 @@ namespace TaskManager
             this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.button1.Location = new System.Drawing.Point(552, 44);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(120, 23);
+            this.button1.Size = new System.Drawing.Size(120, 26);
             this.button1.TabIndex = 6;
             this.button1.Text = "Фильтр";
             this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // ttsONOFF
+            // 
+            this.ttsONOFF.AutoSize = true;
+            this.ttsONOFF.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.ttsONOFF.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.ttsONOFF.Location = new System.Drawing.Point(12, 49);
+            this.ttsONOFF.Name = "ttsONOFF";
+            this.ttsONOFF.Size = new System.Drawing.Size(125, 18);
+            this.ttsONOFF.TabIndex = 11;
+            this.ttsONOFF.Text = "Используем TTS?";
+            this.ttsONOFF.UseVisualStyleBackColor = true;
             // 
             // mainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(813, 450);
+            this.Controls.Add(this.ttsONOFF);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.btnStop);
             this.Controls.Add(this.btnStart);
@@ -213,6 +226,7 @@ namespace TaskManager
             this.Name = "mainForm";
             this.Text = "Менеджер задач";
             this.Load += new System.EventHandler(this.mainForm_Load);
+            this.Shown += new System.EventHandler(this.mainForm_Shown);
             this.Resize += new System.EventHandler(this.mainForm_Resize);
             ((System.ComponentModel.ISupportInitialize)(this.taskDataGridView)).EndInit();
             this.statusStrip1.ResumeLayout(false);
@@ -239,6 +253,7 @@ namespace TaskManager
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel2;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel3;
+        private System.Windows.Forms.CheckBox ttsONOFF;
     }
 }
 
