@@ -27,8 +27,9 @@ namespace TaskManager
             //string Query = "insert into TbTexts(val1, val2) values('"+this.textBox1.Text + "','" + this.textBox2.Text + "')";
 
             int i = Convert.ToInt32(isCompletedCheckBox.Checked);
+            int j = Convert.ToInt32(isImpTaskCheckBox.Checked);
 
-            string stringQuery = "insert into task(task, doDate, Details, Done) values('" + this.titleTextBox.Text + "','" + this.doDatePicker.Text + "' ,'" + this.detailsTextBox.Text + "','" + i + "'  )";
+            string stringQuery = "insert into task(task, doDate, Details, Done, ImpTask) values('" + this.titleTextBox.Text + "','" + this.doDatePicker.Text + "' ,'" + this.detailsTextBox.Text + "','" + i + "' , '" + j + "')";
             sqlite_conn.Open();//Open the SqliteConnection
             var SqliteCmd = new SQLiteCommand();//Initialize the SqliteCommand
                 SqliteCmd = sqlite_conn.CreateCommand();//Create the SqliteCommand

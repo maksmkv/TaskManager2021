@@ -223,8 +223,10 @@ namespace TaskManager
             this.Controls.Add(this.addTask);
             this.Controls.Add(this.loadButton);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MaximizeBox = false;
             this.Name = "mainForm";
             this.Text = "Менеджер задач";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.mainForm_FormClosing);
             this.Load += new System.EventHandler(this.mainForm_Load);
             this.Shown += new System.EventHandler(this.mainForm_Shown);
             this.Resize += new System.EventHandler(this.mainForm_Resize);

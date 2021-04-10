@@ -41,6 +41,9 @@ namespace TaskManager
             this.button1 = new System.Windows.Forms.Button();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
+            this.button2 = new System.Windows.Forms.Button();
+            this.label3 = new System.Windows.Forms.Label();
+            this.isImpTaskCheckBox = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // cancelButton
@@ -122,7 +125,7 @@ namespace TaskManager
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(364, 299);
+            this.label1.Location = new System.Drawing.Point(93, 326);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(35, 13);
             this.label1.TabIndex = 18;
@@ -131,9 +134,9 @@ namespace TaskManager
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(235, 294);
+            this.button1.Location = new System.Drawing.Point(12, 326);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.Size = new System.Drawing.Size(75, 22);
             this.button1.TabIndex = 19;
             this.button1.Text = "button1";
             this.button1.UseVisualStyleBackColor = true;
@@ -158,11 +161,45 @@ namespace TaskManager
             this.label2.Text = "label2";
             this.label2.Visible = false;
             // 
+            // button2
+            // 
+            this.button2.Location = new System.Drawing.Point(251, 299);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(149, 23);
+            this.button2.TabIndex = 22;
+            this.button2.Text = "Текущая дата/снять флаг";
+            this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(548, 41);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(35, 13);
+            this.label3.TabIndex = 23;
+            this.label3.Text = "label3";
+            this.label3.Visible = false;
+            // 
+            // isImpTaskCheckBox
+            // 
+            this.isImpTaskCheckBox.AutoSize = true;
+            this.isImpTaskCheckBox.Location = new System.Drawing.Point(103, 303);
+            this.isImpTaskCheckBox.Name = "isImpTaskCheckBox";
+            this.isImpTaskCheckBox.Size = new System.Drawing.Size(71, 17);
+            this.isImpTaskCheckBox.TabIndex = 24;
+            this.isImpTaskCheckBox.Text = "Важное?";
+            this.isImpTaskCheckBox.UseVisualStyleBackColor = true;
+            this.isImpTaskCheckBox.CheckedChanged += new System.EventHandler(this.isImpTaskCheckBox_CheckedChanged);
+            // 
             // EditTaskForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(598, 345);
+            this.Controls.Add(this.isImpTaskCheckBox);
+            this.Controls.Add(this.label3);
+            this.Controls.Add(this.button2);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.button1);
@@ -177,6 +214,7 @@ namespace TaskManager
             this.Controls.Add(this.titleTextBox);
             this.Name = "EditTaskForm";
             this.Text = "Редактировать задачу";
+            this.Load += new System.EventHandler(this.EditTaskForm_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -196,5 +234,8 @@ namespace TaskManager
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.CheckBox isImpTaskCheckBox;
     }
 }

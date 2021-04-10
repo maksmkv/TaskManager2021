@@ -37,6 +37,7 @@ namespace TaskManager
             this.isCompletedCheckBox = new System.Windows.Forms.CheckBox();
             this.okButton = new System.Windows.Forms.Button();
             this.cancelButton = new System.Windows.Forms.Button();
+            this.isImpTaskCheckBox = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // titleTextBox
@@ -115,11 +116,22 @@ namespace TaskManager
             this.cancelButton.UseVisualStyleBackColor = true;
             this.cancelButton.Click += new System.EventHandler(this.cancelButton_Click);
             // 
+            // isImpTaskCheckBox
+            // 
+            this.isImpTaskCheckBox.AutoSize = true;
+            this.isImpTaskCheckBox.Location = new System.Drawing.Point(117, 303);
+            this.isImpTaskCheckBox.Name = "isImpTaskCheckBox";
+            this.isImpTaskCheckBox.Size = new System.Drawing.Size(71, 17);
+            this.isImpTaskCheckBox.TabIndex = 10;
+            this.isImpTaskCheckBox.Text = "Важное?";
+            this.isImpTaskCheckBox.UseVisualStyleBackColor = true;
+            // 
             // AddTaskForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(598, 345);
+            this.Controls.Add(this.isImpTaskCheckBox);
             this.Controls.Add(this.cancelButton);
             this.Controls.Add(this.okButton);
             this.Controls.Add(this.isCompletedCheckBox);
@@ -145,5 +157,6 @@ namespace TaskManager
         private System.Windows.Forms.CheckBox isCompletedCheckBox;
         private System.Windows.Forms.Button okButton;
         private System.Windows.Forms.Button cancelButton;
+        private System.Windows.Forms.CheckBox isImpTaskCheckBox;
     }
 }

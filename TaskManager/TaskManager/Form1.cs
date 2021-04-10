@@ -34,10 +34,15 @@ namespace TaskManager
         readonly SoundPlayer soundPlayer = new SoundPlayer();
         readonly SpeechSynthesizer speaker = new SpeechSynthesizer();
 
-
         public mainForm()
         {
             InitializeComponent();
+        }
+
+        public void Dispose()
+        {
+            soundPlayer.Dispose();
+            speaker.Dispose();
         }
 
         private void loadButton_Click(object sender, EventArgs e)
@@ -96,9 +101,10 @@ namespace TaskManager
             var columnDoDate = new DataGridViewTextBoxColumn { DataPropertyName = "DoDate", HeaderText = "Начало события" };
             var columnTask = new DataGridViewTextBoxColumn { DataPropertyName = "Task", HeaderText = "Задача", Width = 75 };
             var columnDetails = new DataGridViewTextBoxColumn { DataPropertyName = "Details", HeaderText = "Описание", Width = 250 };
+            var columnImpTask = new DataGridViewTextBoxColumn { DataPropertyName = "ImpTask", HeaderText = "Важная задача", Width = 2 };
 
 
-            this.taskDataGridView.Columns.AddRange(new[] { columnId, columnTask, columnDoDate, columnDone, columnDetails });
+            this.taskDataGridView.Columns.AddRange(new[] { columnId, columnTask, columnDoDate, columnDone, columnDetails, columnImpTask });
 
             this.taskDataGridView.Columns[0].Visible = false;
             this.taskDataGridView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
@@ -122,8 +128,9 @@ namespace TaskManager
                 string detailTask = taskDataGridView.SelectedCells[4].Value.ToString();
                 string dataStringGridView = taskDataGridView.SelectedRows[0].Cells[0].Value.ToString();
                 string isCheckedData = taskDataGridView.SelectedCells[3].Value.ToString();
+                string isImpTask = taskDataGridView.SelectedCells[5].Value.ToString();
 
-                EditTaskForm EditForm = new EditTaskForm(taskText, dateTask, detailTask, dataStringGridView, isCheckedData);
+                EditTaskForm EditForm = new EditTaskForm(taskText, dateTask, detailTask, dataStringGridView, isCheckedData, isImpTask);
                 EditForm.Show();
             }
         }
@@ -242,6 +249,7 @@ namespace TaskManager
             }
             else
             {
+                taskDataGridView.Sort(taskDataGridView.Columns[2], ListSortDirection.Ascending);
                 taskDataGridView.CurrentCell = null;
                 foreach (DataGridViewRow row in taskDataGridView.Rows)
                 {
@@ -257,10 +265,12 @@ namespace TaskManager
                     {
                         taskDataGridView.Focus();
                         taskDataGridView.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-
                     }
                 }
 
+
+
+                btnStop.Enabled = true;
                 timer.Start();
                 toolStripStatusLabel1.Text = " Running... ";
                 btnStart.Enabled = false;
@@ -356,7 +366,6 @@ namespace TaskManager
             {
                 notifyIcon1.Text = "Таймер остановлен!";
             }
-
         }
 
         private void notifyIcon1_DoubleClick(object sender, EventArgs e)
@@ -443,6 +452,16 @@ namespace TaskManager
 
             else
                 return;
+        }
+
+        private void mainForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            var result = MessageBox.Show("Закрыть программу?", "Внимание",
+                   MessageBoxButtons.YesNo,
+                   MessageBoxIcon.Question);
+            if (result != DialogResult.Yes)
+
+                e.Cancel = true;
         }
     }
 }
